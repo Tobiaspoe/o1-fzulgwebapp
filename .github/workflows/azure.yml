@@ -26,6 +26,5 @@ jobs:
         uses: azure/webapps-deploy@v2
         with:
           app-name: o1-foerder-fzulg-github
-          slot-name: production
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
