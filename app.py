@@ -2,12 +2,10 @@ import streamlit as st
 import openai
 
 # ------------------ CONFIG ------------------ #
-openai.api_key = "8Q3gzvFocgbvUGRUffwU4t0PXicVQ1B0eqXQVzzDzdXiOyYpDw8cJQQJ98BCACfhMk5XJ3w3AAABACOGWBQQ"
-openai.api_base = "https://finmatch-bsfz-sweden-march25-v4.openai.azure.com/"
-openai.api_type = "azure"
-openai.api_version = "2024-02-15-preview"
-
+api_key = "8Q3gzvFocgbv0GRUffwU4t0PXicVQ1BoeqXQVzzDzdxiOqYpDw8cJQQJ99BCACfhMk5XJ3w3AAABACOGWQBQ"
+azure_endpoint = "https://finmatch-bsfz-sweden-march25-v4.openai.azure.com"
 deployment_name = "o1"
+api_version = "2024-02-15-preview"
 
 system_prompt = """**Einleitung und Funktion**:
 Du erstellst Anträge für die Forschungszulage basierend auf dem vorgegebenen Wissensstand. Du agierst wie ein smarter KI-Förderberater mit Verständnis für Textanalyse, Steuerrichtlinien und Innovationsförderung. Reagiere sachlich, hilfreich und förderlogisch."""
@@ -23,7 +21,13 @@ if st.button("Absenden"):
         st.warning("Bitte eine Eingabe machen.")
     else:
         with st.spinner("KI denkt nach..."):
-            response = openai.chat.completions.create(
+            client = openai.AzureOpenAI(
+                api_key=api_key,
+                api_version=api_version,
+                azure_endpoint=azure_endpoint
+            )
+
+            response = client.chat.completions.create(
                 model=deployment_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
@@ -32,6 +36,7 @@ if st.button("Absenden"):
                 temperature=0.7,
                 max_tokens=1500
             )
+
             reply = response.choices[0].message.content
             st.markdown("### 💬 Antwort")
             st.write(reply)
