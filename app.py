@@ -1,7 +1,5 @@
 import streamlit as st
 import openai
-import os
-import requests
 
 # ------------------ CONFIG ------------------ #
 openai.api_key = "8Q3gzvFocgbvUGRUffwU4t0PXicVQ1B0eqXQVzzDzdXiOyYpDw8cJQQJ98BCACfhMk5XJ3w3AAABACOGWBQQ"
@@ -9,7 +7,8 @@ openai.api_base = "https://finmatch-bsfz-sweden-march25-v4.openai.azure.com/"
 openai.api_type = "azure"
 openai.api_version = "2024-02-15-preview"
 
-deployment_name = "o1"  # Dein Azure Deployment-Name
+deployment_name = "o1"
+
 system_prompt = """**Einleitung und Funktion**:
 Du erstellst Anträge für die Forschungszulage basierend auf dem vorgegebenen Wissensstand. Du agierst wie ein smarter KI-Förderberater mit Verständnis für Textanalyse, Steuerrichtlinien und Innovationsförderung. Reagiere sachlich, hilfreich und förderlogisch."""
 
@@ -24,8 +23,8 @@ if st.button("Absenden"):
         st.warning("Bitte eine Eingabe machen.")
     else:
         with st.spinner("KI denkt nach..."):
-            response = openai.ChatCompletion.create(
-                engine=deployment_name,
+            response = openai.chat.completions.create(
+                model=deployment_name,
                 messages=[
                     {"role": "system", "content": system_prompt},
                     {"role": "user", "content": user_input}
@@ -33,6 +32,6 @@ if st.button("Absenden"):
                 temperature=0.7,
                 max_tokens=1500
             )
-            reply = response.choices[0].message["content"]
+            reply = response.choices[0].message.content
             st.markdown("### 💬 Antwort")
             st.write(reply)
